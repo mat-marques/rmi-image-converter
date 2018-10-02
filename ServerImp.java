@@ -8,13 +8,13 @@ import javax.imageio.ImageIO;
 import java.util.*;
 
 
-public class ServerImp {
+public class ServerImp implements Server {
 	
 	/*
 	 * Função para converter uma imagem para tons de cinza
 	 */
 	@Override
-	public int[] grayscaleConvertion(int[] image){
+	public int[] grayscaleConvertion(int[] image) throws RemoteException{
 		int[] source = new int[image.length];
 
 		System.out.println("Inicio da conversão da imagem recebida.");
