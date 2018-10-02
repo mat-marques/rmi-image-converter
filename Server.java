@@ -2,6 +2,6 @@ import java.rmi.*;
 
 public interface Server extends Remote {
 	
-	public byte[] grayscaleConvertion(byte[] imageBytes) throws RemoteException;
+	public int[] grayscaleConvertion(int[] image) throws RemoteException;
 	
 }
