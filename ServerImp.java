@@ -17,7 +17,7 @@ public class ServerImp implements Server {
 	public int[] grayscaleConvertion(int[] image) throws RemoteException{
 		int[] source = new int[image.length];
 
-		System.out.println("Inicio da conversão da imagem recebida.");
+		System.out.println("Begin image conversion.");
 		
 		
 		for(int y = 0; y < image.length; y++){
@@ -39,7 +39,7 @@ public class ServerImp implements Server {
 		    
 		}
 		
-		System.out.println("Fim da conversão da imagem.");
+		System.out.println("End.");
 		return source;
 	}
 	
@@ -53,7 +53,7 @@ public class ServerImp implements Server {
 		    System.setSecurityManager(new RMISecurityManager());
 		    // arg. 0 = rmi url
 		    if (args.length!=1) {
-		      System.err.println("Usage: TicketServerImpl <server-rmi-url>");
+		      System.err.println("Usage: Server <server-rmi-url>");
 		      System.exit(-1);
 		    }
 		    try {  

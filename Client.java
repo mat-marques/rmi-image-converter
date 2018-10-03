@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Scanner;
+import java.text.SimpleDateFormat;
 
 public class Client {
     private static int[] auxint;
@@ -48,43 +49,89 @@ public class Client {
         imagePath = sc.nextLine(); //caminho para a imagem
 
 
+//        for(int i = 1; i <= serverQuantity; i++){
+//            System.out.println("Server " + i + " : " + serverList.get(Integer.toString(i)));
+//        }
 
-
-        for(int i = 1; i <= serverQuantity; i++){
-            System.out.println("Server " + i + " : " + serverList.get(Integer.toString(i)));
-        }
-
-
-
-
-
-
-
-
+        //Valor de inicio do tempo
+        long inicio = System.currentTimeMillis();
+        
+        
         byteList = readImage(imagePath, serverQuantity);
-        buildImage(imagePath, serverQuantity, byteList);
+        //buildImage(imagePath, serverQuantity, byteList);
 
-
-
-
-        ///home/rafael/Downloads/DSC_0306.jpg
-
-        // look up in nameserver
-        String fullname = args[0];
-        //TicketServer server = null;
+        
+        //Vetor de servidores
+        Server servers[] = new Server[5];
+        
         try {
-            //server = (TicketServer)Naming.lookup(fullname);
+        	//Definição da conexão com os servers pelo seu nome de registro
+        	for(int i = 0; i < serverQuantity; i++) {
+        		servers[i] = (Server)Naming.lookup(serverList.get(Integer.toString(i)));
+        		System.out.println("Lookup of server "+ serverList.get(Integer.toString(i)) + " done.");
+        	}
         } catch (Exception e) {
-            System.out.println("Caught an exception doing name lookup on "+fullname
-                    +": "+e);
+            System.out.println("Caught an exception doing name lookup on server: "+ e);
             System.exit(-1);
         }
 
+        
+        try {
+        	
+        	//Threads para paralelismo de consulta ao servidor
+        	Thread[] t = new Thread[serverQuantity];
+        	
+        	for(int i = 0; i < serverQuantity; i++) {
+        		t[i] = sendoToServer(servers[i], byteList, i);
+        		t[i].start();
+        	}
+        	
+        	//Espera o fim de todas as threads
+        	for(int i = 0; i < serverQuantity; i++) {
+        		t[i].join();
+        	}
+        	
+        	//Montagem da imagem
+        	buildImage(imagePath, serverQuantity, byteList);
+        	
+        	//Valor de final do tempo
+        	long fim = System.currentTimeMillis();
 
+    	    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss SSSSS");
+    	    System.out.println("time spent running the conversion (mm:ss:SSSSS): " + sdf.format(new java.util.Date(fim - inicio)));
+        	  
+        } catch (Exception e) {
+        	System.out.println("Exception caught while getting grayscale conversion: "+ e);
+        	System.exit(-1);
+        }
+        
+        
     }
 
 
-
+    public static Thread sendoToServer(Server s, Hashtable<String, int[]> byteList, int index){
+    	Thread t = new Thread() {
+    	     
+    	    @Override
+    	    public void run() {
+    	    	
+    	    	try {
+  
+					byteList.put(Integer.toString(index), s.grayscaleConvertion(byteList.get(Integer.toString(index))));
+					
+					System.out.println("Call in server " + index + " complete.");
+					
+    	    	} catch (RemoteException e) {
+			       	System.out.println("Exception caught while getting grayscale conversion: "+ e);
+		        	System.exit(-1);
+				}
+    	       
+    	    }
+    	  };
+    	  
+    	  return t;
+    }
+    
     private static Hashtable<String, int[]> readImage(String imagePath, int serverQuantity){
         File file = new File(imagePath);
         BufferedImage image = null;
