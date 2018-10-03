@@ -147,7 +147,7 @@ public class Client {
     	  return t;
     }
     
-    private static Hashtable<String, int[]> readImage(String imagePath, int serverQuantity){
+    public static Hashtable<String, int[]> readImage(String imagePath, int serverQuantity){
         File file = new File(imagePath);
         BufferedImage image = null;
         try {
@@ -230,7 +230,7 @@ public class Client {
         return byteList;
     }
 
-    private static void buildImage( String imagePath, String extension, int serverQuantity, Hashtable<String, int[]> byteList){
+    public static void buildImage( String imagePath, String extension, int serverQuantity, Hashtable<String, int[]> byteList){
 
         int[] imageGray = null;
 
