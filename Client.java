@@ -22,6 +22,7 @@ public class Client {
     public static void main(String[] args) {
         int serverQuantity;
         String imagePath;
+        String imagePath2;
         Hashtable<String, int[]> byteList;
         Hashtable<String, String> serverList;
 
@@ -36,6 +37,7 @@ public class Client {
             System.err.println("Must have between 1 and 5 servers");
             System.exit(-1);
         }
+        
         serverList = new Hashtable<String, String>();
         for(int i = 1; i <= serverQuantity; i++){
             System.out.println("Inform the name of server " + i + " : ");
@@ -48,6 +50,9 @@ public class Client {
         System.out.println("Image path : ");
         imagePath = sc.nextLine(); //caminho para a imagem
 
+        System.out.println("Out Image path : ");
+        imagePath2 = sc.nextLine();
+        
 
 //        for(int i = 1; i <= serverQuantity; i++){
 //            System.out.println("Server " + i + " : " + serverList.get(Integer.toString(i)));
@@ -66,8 +71,8 @@ public class Client {
         
         try {
         	//Definição da conexão com os servers pelo seu nome de registro
-        	for(int i = 0; i < serverQuantity; i++) {
-        		servers[i] = (Server)Naming.lookup(serverList.get(Integer.toString(i)));
+        	for(int i = 1; i <= serverQuantity; i++) {
+        		servers[i-1] = (Server)Naming.lookup(serverList.get(Integer.toString(i)));
         		System.out.println("Lookup of server "+ serverList.get(Integer.toString(i)) + " done.");
         	}
         } catch (Exception e) {
@@ -81,18 +86,18 @@ public class Client {
         	//Threads para paralelismo de consulta ao servidor
         	Thread[] t = new Thread[serverQuantity];
         	
-        	for(int i = 0; i < serverQuantity; i++) {
-        		t[i] = sendoToServer(servers[i], byteList, i);
-        		t[i].start();
+        	for(int i = 1; i <= serverQuantity; i++) {
+        		t[i-1] = sendoToServer(servers[i-1], byteList, i);
+        		t[i-1].start();
         	}
         	
         	//Espera o fim de todas as threads
-        	for(int i = 0; i < serverQuantity; i++) {
-        		t[i].join();
+        	for(int i = 1; i <= serverQuantity; i++) {
+        		t[i-1].join();
         	}
         	
         	//Montagem da imagem
-        	buildImage(imagePath, serverQuantity, byteList);
+        	buildImage(imagePath2, serverQuantity, byteList);
         	
         	//Valor de final do tempo
         	long fim = System.currentTimeMillis();
@@ -102,6 +107,7 @@ public class Client {
         	  
         } catch (Exception e) {
         	System.out.println("Exception caught while getting grayscale conversion: "+ e);
+        	e.printStackTrace();
         	System.exit(-1);
         }
         
@@ -122,7 +128,8 @@ public class Client {
 					System.out.println("Call in server " + index + " complete.");
 					
     	    	} catch (RemoteException e) {
-			       	System.out.println("Exception caught while getting grayscale conversion: "+ e);
+			       	System.out.println("Exception caught while getting grayscale conversion in Thread: "+ e);
+			       	e.printStackTrace();
 		        	System.exit(-1);
 				}
     	       
@@ -258,7 +265,7 @@ public class Client {
             }
 
             System.out.println(height + " - " + width + "\n" + endImage.getHeight() + " - " + endImage.getWidth());
-            File file = new File("/home/rafael/testee.png");
+            File file = new File(imagePath);
             ImageIO.write(endImage, "png", file);
 
 

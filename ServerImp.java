@@ -1,5 +1,5 @@
 import java.rmi.*;
-
+import java.rmi.server.UnicastRemoteObject;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -8,8 +8,20 @@ import javax.imageio.ImageIO;
 import java.util.*;
 
 
-public class ServerImp implements Server {
+public class ServerImp extends UnicastRemoteObject implements Server {
 	
+	protected ServerImp() throws RemoteException {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+
 	/*
 	 * Função para converter uma imagem para tons de cinza
 	 */
