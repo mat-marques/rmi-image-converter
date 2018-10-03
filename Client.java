@@ -22,8 +22,8 @@ public class Client {
     public static void main(String[] args) {
         int serverQuantity;
         String imagePath;
-        String imagePath2;
-        String imageExtension = "";
+        String imagePath2 = "";
+        String imageExtension = "png";
         
         Hashtable<String, int[]> byteList;
         Hashtable<String, String> serverList;
@@ -53,19 +53,18 @@ public class Client {
         imagePath = sc.nextLine(); //caminho para a imagem
         
         if(imagePath.endsWith(".png")) {
-        	imageExtension = "png";
+        	imagePath2 = imagePath.substring(0, imagePath.length()-4);
         } else if(imagePath.endsWith(".jpeg")) {
-        	imageExtension = "jpeg";
+        	imagePath2 = imagePath.substring(0, imagePath.length()-5);
         } else if(imagePath.endsWith(".jpg")) {
-        	imageExtension = "jpg";
+        	imagePath2 = imagePath.substring(0, imagePath.length()-4);
         } else {
         	System.out.println("File extension not allowed. Try again.");
         	System.exit(0);
         }
         
-        System.out.println("Out Image path : ");
-        imagePath2 = sc.nextLine(); //caminho para a imagem de saída
-        
+        System.out.println("File Extension: "+ imageExtension);
+        System.out.println("File Path: "+ imagePath2);
 
         //Valor de inicio do tempo
         long inicio = System.currentTimeMillis();
