@@ -1,13 +1,3 @@
-Servidor:
-- Criar uma pasta para o server. Se for mais de um servidor, então deve-se criar várias
-pastas diferentes;
-- Colocar dentro da pasta do servidor os arquivos do projeto ".class";
-- Abrir um terminal dentro da pasta do servidor;
-- rmiregistry &
-- Rodar no terminal o comando: java -Djava.rmi.server.codebase=http://<endereço IP>/<caminho para os arquivos .class do servidor> -Djava.security.policy=java.policy ServerImp rmi://<endereço IP>/<caminho para os arquivos .class do servidor>:<porta (quando não utilizar a padrão)>/<id_metodo> &
-- Faça as alterações onde temos <...>
-
-
 Cliente:
 - Compilar os *.java;
 - Rodar no terminal o comando para gerar o stub: rmic <nome-do-class-que-implementa-o-servidor>
@@ -15,6 +5,18 @@ Cliente:
 - No terminal digite o comando:
 java -Djava.security.policy=java.policy TicketClient rmi://<endereço IP>/<caminho para os arquivos .class do servidor>:<porta>/<id_metodo>
 - Faça as alterações onde temos <...>
+
+
+Servidor:
+- Criar uma pasta para o server. Se for mais de um servidor, então deve-se criar várias
+pastas diferentes;
+- Colocar dentro da pasta do servidor os arquivos do projeto ".class";
+- Abrir um terminal dentro da pasta do servidor;
+- Digitar no terminal aberto: rmiregistry &
+- Rodar no terminal o comando: java -Djava.rmi.server.codebase=http://<endereço IP>/<caminho para os arquivos .class do servidor> -Djava.security.policy=java.policy ServerImp rmi://<endereço IP>/<caminho para os arquivos .class do servidor>:<porta (quando não utilizar a padrão)>/<id_metodo> &
+- Faça as alterações onde temos <...>
+
+
 
 Ex:
 Servidor:
