@@ -23,6 +23,8 @@ public class Client {
         int serverQuantity;
         String imagePath;
         String imagePath2;
+        String imageExtension = "";
+        
         Hashtable<String, int[]> byteList;
         Hashtable<String, String> serverList;
 
@@ -49,21 +51,27 @@ public class Client {
 
         System.out.println("Image path : ");
         imagePath = sc.nextLine(); //caminho para a imagem
-
-        System.out.println("Out Image path : ");
-        imagePath2 = sc.nextLine();
         
-
-//        for(int i = 1; i <= serverQuantity; i++){
-//            System.out.println("Server " + i + " : " + serverList.get(Integer.toString(i)));
-//        }
+        if(imagePath.endsWith(".png")) {
+        	imageExtension = "png";
+        } else if(imagePath.endsWith(".jpeg")) {
+        	imageExtension = "jpeg";
+        } else if(imagePath.endsWith(".jpg")) {
+        	imageExtension = "jpg";
+        } else {
+        	System.out.println("File extension not allowed. Try again.");
+        	System.exit(0);
+        }
+        
+        System.out.println("Out Image path : ");
+        imagePath2 = sc.nextLine(); //caminho para a imagem de saída
+        
 
         //Valor de inicio do tempo
         long inicio = System.currentTimeMillis();
         
         
         byteList = readImage(imagePath, serverQuantity);
-        //buildImage(imagePath, serverQuantity, byteList);
 
         
         //Vetor de servidores
@@ -87,7 +95,7 @@ public class Client {
         	Thread[] t = new Thread[serverQuantity];
         	
         	for(int i = 1; i <= serverQuantity; i++) {
-        		t[i-1] = sendoToServer(servers[i-1], byteList, i);
+        		t[i-1] = sendToServer(servers[i-1], byteList, i);
         		t[i-1].start();
         	}
         	
@@ -97,13 +105,13 @@ public class Client {
         	}
         	
         	//Montagem da imagem
-        	buildImage(imagePath2, serverQuantity, byteList);
+        	buildImage(imagePath2, imageExtension, serverQuantity, byteList);
         	
-        	//Valor de final do tempo
-        	long fim = System.currentTimeMillis();
+        	//Valor do final do tempo
+         	long fim = System.currentTimeMillis();
 
     	    SimpleDateFormat sdf = new SimpleDateFormat("mm:ss SSSSS");
-    	    System.out.println("time spent running the conversion (mm:ss:SSSSS): " + sdf.format(new java.util.Date(fim - inicio)));
+    	    System.out.println("time spent running the conversion (mm:ss:ms): " + sdf.format(new java.util.Date(fim - inicio)));
         	  
         } catch (Exception e) {
         	System.out.println("Exception caught while getting grayscale conversion: "+ e);
@@ -115,7 +123,7 @@ public class Client {
     }
 
 
-    public static Thread sendoToServer(Server s, Hashtable<String, int[]> byteList, int index){
+    public static Thread sendToServer(Server s, Hashtable<String, int[]> byteList, int index){
     	Thread t = new Thread() {
     	     
     	    @Override
@@ -222,7 +230,7 @@ public class Client {
         return byteList;
     }
 
-    private static void buildImage( String imagePath, int serverQuantity, Hashtable<String, int[]> byteList){
+    private static void buildImage( String imagePath, String extension, int serverQuantity, Hashtable<String, int[]> byteList){
 
         int[] imageGray = null;
 
@@ -266,13 +274,9 @@ public class Client {
 
             System.out.println(height + " - " + width + "\n" + endImage.getHeight() + " - " + endImage.getWidth());
             File file = new File(imagePath);
-            ImageIO.write(endImage, "png", file);
+            
+            ImageIO.write(endImage, extension, file);
 
-
-            /*
-            fos = new FileOutputStream("/home/rafael/testee.jpg", false);
-            fos.write(imageGray);
-            */
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
